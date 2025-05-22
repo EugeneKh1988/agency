@@ -18,6 +18,7 @@ class UserUpdateController extends Controller
         $request->validate([
             'name' => ['sometimes','required','string','min:3','max:255'],
             'email' => ['sometimes', 'required', 'lowercase','email', 'max:255', 'unique:'.User::class],
+            'current_password' => ['sometimes','required',  'current_password'],
             'password' => ['sometimes','required', 'confirmed', Rules\Password::defaults()],
         ]);
 
