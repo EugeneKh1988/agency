@@ -27,7 +27,7 @@ class TeamsController extends Controller
 
         $res = Team::skip($skip)->take($count)->get();
 
-        return response()->json($res);
+        return response()->json(['workers' => $res, 'count' => Team::count()]);
     }
 
     public function show(Request $request, int $id): JsonResponse {
@@ -41,7 +41,7 @@ class TeamsController extends Controller
         });
         //dd($res);
         if(!$res) {
-            return response()->json(['id' => 'Not found'], 404);
+            return response()->json(['id' => 'Not found'], 422);
         }
 
         return response()->json($res);
