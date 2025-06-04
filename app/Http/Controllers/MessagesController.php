@@ -78,12 +78,18 @@ class MessagesController extends Controller
 
     // create new message
     public function store(Request $request): JsonResponse {
-        $request->validate([
+        $user = $request->user();
+        $val_rules = [
             'name' => ['required','min:3','string','max:255'],
             'email' => ['required', 'email','string','max:255'],
             'phone' => ['nullable', 'string','max:255'],
             'question' => ['required','min:6','string','max:255'],
-        ]);
+            'captcha' => ['required', 'captcha'],
+        ];
+        if($user && $user->id) {
+            unset($val_rules['captcha']);
+        }
+        $request->validate($val_rules);
 
         $message = new Messages();
 
@@ -171,6 +177,9 @@ class MessagesController extends Controller
             }
             if($request->has('answer')) {
                 $message->answer = $request->answer;
+                if(!$request->has('was_answered')) {
+                    $message->was_answered = 1;
+                }
             }
         }
         elseif(!$message->was_answered) {
