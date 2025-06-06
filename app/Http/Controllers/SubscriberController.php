@@ -27,15 +27,6 @@ class SubscriberController extends Controller
         // Send email
         $subject = 'Please Comfirm Subscription';
         $verification_link = url('subscriber/verify/'.$token.'/'.$request->email);
-        $message = 'Please click on the following link in order to verify as subscriber:<br><br>';
-            
-        // $message .= $verification_link;
-
-        $message .= '<a href="'.$verification_link.'">';
-        $message .= $verification_link;
-        $message .= '</a><br><br>';
-        $message .= 'If you received this email by mistake, simply delete it. You will not be subscribed if you do not  click the confirmation link above.';
-
         \Mail::to($request->email)->send(new VerifySubscriberEmail($subject, $verification_link));
 
         return response()->json(['status' => 'Thanks, please check your inbox to confirm subscription']);
@@ -43,9 +34,6 @@ class SubscriberController extends Controller
 
     public function verify($token, $email)
     {
-
-        // Helpers::read_json();
-        
         $subscriber_data = Subscribers::where('token', $token)->where('email', $email)->first();
         $redirect_url = env('FRONTEND_URL', 'http://localhost:3000');
         if($subscriber_data)
